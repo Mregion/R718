@@ -8,12 +8,112 @@
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
-    body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#020617);color:#fff}
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:linear-gradient(135deg,#0f172a,#020617);
+      color:#fff
+    }
     .page{padding:20px;max-width:1100px;margin:auto}
     h1{font-size:20px;margin:0 0 14px}
-    .login{max-width:420px;margin:120px auto;background:rgba(255,255,255,.08);padding:20px;border-radius:12px}
-    input,button{width:100%;padding:12px;margin-top:10px;border-radius:8px;border:none;font-size:14px}
-    button{background:#38bdf8;font-weight:bold;cursor:pointer}
+
+    /* LOGIN CARD (AMÉLIORÉE) */
+    .login{
+      max-width:460px;
+      margin:110px auto;
+      background:rgba(255,255,255,.08);
+      padding:22px;
+      border-radius:16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(10px);
+    }
+    .loginTop{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:14px;
+    }
+    .logoWrap{
+      width:64px;height:64px;
+      border-radius:14px;
+      background:rgba(255,255,255,.08);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      flex:0 0 64px;
+    }
+    .logoWrap img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      background:transparent;
+    }
+    .loginTitle{
+      margin:0;
+      font-size:20px;
+      line-height:1.15;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      font-size:13px;
+      color:#cbd5e1;
+      line-height:1.35;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      color:#e5e7eb;
+      font-size:12px;
+      margin:10px 0 10px;
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    input,button{
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border-radius:10px;
+      border:none;
+      font-size:14px
+    }
+    input{
+      background: rgba(255,255,255,.92);
+      outline: none;
+    }
+    button{
+      background:#38bdf8;
+      font-weight:bold;
+      cursor:pointer
+    }
+    button:hover{ filter: brightness(1.05); }
+    .hint{
+      margin-top:10px;
+      font-size:12px;
+      color:#9ca3af;
+      text-align:center;
+      line-height:1.35;
+    }
+    .footer{
+      margin-top:14px;
+      padding-top:12px;
+      border-top:1px solid rgba(255,255,255,.10);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-size:11px;
+      color:#9ca3af;
+      flex-wrap:wrap;
+    }
+    .footer span{ white-space:nowrap; }
+
+    /* RESTE DU SITE */
     .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:14px}
     .card{background:rgba(255,255,255,.1);padding:16px;border-radius:14px;cursor:pointer}
     .card:hover{background:rgba(255,255,255,.18)}
@@ -34,6 +134,9 @@
 <script>
 const PASSWORD = "IssaR718";
 let state = "login";
+
+/* ✅ Mets ici le chemin exact de ton logo */
+const LOGO_SRC = "ASSETS/logo.jfif";
 
 const slides = {
   diaphragm: [
@@ -84,11 +187,32 @@ function render(){
   if(state==="login"){
     app.innerHTML = `
       <div class="login">
-        <h1>Pompe à Chaleur - R718</h1>
-        <p class="pill">Accès restreint</p>
+        <div class="loginTop">
+          <div class="logoWrap">
+            <img src="${LOGO_SRC}" alt="Logo projet R718"
+                 onerror="this.style.display='none'; this.parentElement.style.background='rgba(255,255,255,.06)';" />
+          </div>
+          <div>
+            <h1 class="loginTitle">Pompe à Chaleur – R718</h1>
+            <p class="subtitle">Prototype expérimental à turbocompresseur refroidi</p>
+          </div>
+        </div>
+
+        <div class="badge">🔒 Accès technique</div>
+
         <input id="pw" type="password" placeholder="Mot de passe" />
         <button onclick="check()">Entrer</button>
-        <p id="err" style="color:#fb7185;display:none;margin-top:10px">Mot de passe incorrect</p>
+
+        <p id="err" style="color:#fb7185;display:none;margin-top:10px;text-align:center">
+          Mot de passe incorrect
+        </p>
+
+        <p class="hint">Réservé aux partenaires et encadrants du projet</p>
+
+        <div class="footer">
+          <span>Projet R718 – Banc expérimental</span>
+          <span>Version v1.0</span>
+        </div>
       </div>
     `;
     return;
@@ -116,17 +240,17 @@ function render(){
         <h1>Turbo</h1>
         <div class="pill">Vue 3D + Slides</div>
 
-<model-viewer
-  src="turbo_web.glb"
-  camera-controls
-  auto-rotate
-  environment-image="neutral"
-  exposure="1.1"
-  shadow-intensity="0.8"
-  style="width:100%; height:420px; background:#111; border-radius:12px;">
-</model-viewer>
+        <model-viewer
+          src="turbo_web.glb"
+          camera-controls
+          auto-rotate
+          environment-image="neutral"
+          exposure="1.1"
+          shadow-intensity="0.8"
+          style="width:100%; height:420px; background:#111; border-radius:12px;">
+        </model-viewer>
 
-        <div class="txt">Si la 3D ne s’affiche pas, mets <b>turbo.glb</b> à côté de <b>index.html</b>.</div>
+        <div class="txt">Si la 3D ne s’affiche pas, vérifie que <b>turbo_web.glb</b> est à côté de <b>index.html</b>.</div>
 
         <h1 style="font-size:16px;margin-top:18px">Slides</h1>
         ${renderSlides("turbo")}
@@ -145,15 +269,20 @@ function render(){
 }
 
 function check(){
-  const pw = document.getElementById("pw").value;
-  if(pw===PASSWORD){ state="home"; render(); }
-  else document.getElementById("err").style.display="block";
+  const pwEl = document.getElementById("pw");
+  const pw = pwEl.value;
+
+  if(pw===PASSWORD){
+    state="home";
+    render();
+  } else {
+    document.getElementById("err").style.display="block";
+    pwEl.focus();
+    pwEl.select();
+  }
 }
 
 render();
 </script>
 </body>
 </html>
-
-
-
