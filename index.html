@@ -117,23 +117,15 @@ function render(){
         <div class="pill">Vue 3D + Slides</div>
 
 <model-viewer
-  src="turbo.glb"
+  src="turbo_web.glb"
   camera-controls
   auto-rotate
   environment-image="neutral"
-  exposure="1.2"
-  shadow-intensity="0.9"
-  camera-orbit="0deg 75deg 2.5m"
-  min-camera-orbit="auto auto 0.1m"
-  max-camera-orbit="auto auto 10m"
-  field-of-view="45deg"
-  style="
-    width:100%;
-    height:420px;
-    background:#111;
-    border-radius:12px;
-  ">
+  exposure="1.1"
+  shadow-intensity="0.8"
+  style="width:100%; height:420px; background:#111; border-radius:12px;">
 </model-viewer>
+
         <div class="txt">Si la 3D ne s’affiche pas, mets <b>turbo.glb</b> à côté de <b>index.html</b>.</div>
 
         <h1 style="font-size:16px;margin-top:18px">Slides</h1>
@@ -162,4 +154,5 @@ render();
 </script>
 </body>
 </html>
+
 
