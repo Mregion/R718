@@ -18,7 +18,7 @@
     .page{padding:20px;max-width:1100px;margin:auto}
     h1{font-size:20px;margin:0 0 14px}
 
-    /* LOGIN CARD */
+    /* LOGIN CARD (AMÉLIORÉE) */
     .login{
       max-width:460px;
       margin:110px auto;
@@ -116,7 +116,7 @@
     }
     .footer span{ white-space:nowrap; }
 
-    /* HOME */
+    /* HOME - RYTHME VISUEL (HERO + KPI + CARDS) */
     .hero{
       margin-top:14px;
       background:rgba(255,255,255,.08);
@@ -203,6 +203,9 @@
     }
 
     /* SECTIONS */
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:14px}
+    .card{background:rgba(255,255,255,.1);padding:16px;border-radius:14px;cursor:pointer}
+    .card:hover{background:rgba(255,255,255,.18)}
     .back{margin-bottom:15px;cursor:pointer;color:#7dd3fc}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
     .box{background:rgba(255,255,255,.08);border-radius:14px;padding:12px}
@@ -211,49 +214,6 @@
     .txt{color:#cbd5e1;font-size:13px;line-height:1.45;margin-top:8px}
     model-viewer{width:100%;height:420px;background:#111;border-radius:12px;margin-top:15px}
     .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.08);color:#cbd5e1;font-size:12px;margin-bottom:10px}
-
-    /* ✅ MORPH IMAGE (BOÎTE) */
-    .morphImg{
-      position:relative;
-      width:100%;
-      height:220px;
-      border-radius:10px;
-      overflow:hidden;
-      background:rgba(0,0,0,.25);
-    }
-    .morphImg img{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      transition:opacity .35s ease, transform .35s ease;
-      background:transparent;
-      border-radius:0;
-    }
-    .morphImg .overlay{
-      opacity:0;
-      transform:scale(1.02);
-    }
-    .morphImg:hover .overlay{
-      opacity:1;
-      transform:scale(1);
-    }
-    .morphImg:hover .base{
-      opacity:0.15;
-    }
-    .morphHint{
-      position:absolute;
-      bottom:8px;
-      right:8px;
-      font-size:11px;
-      color:#e5e7eb;
-      background:rgba(0,0,0,.45);
-      padding:3px 8px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      user-select:none;
-    }
   </style>
 </head>
 
@@ -274,11 +234,9 @@
         { title:"Diaphragm (photo)", img:"ASSETS/diaphragm_photo.png", txt:"Diaphragm – rôle + réglage (à détailler si besoin)." },
       ],
       boite: [
-        // ✅ Slide morph (base + overlay)
-        { title:"Boîte → CFD (morph)", morph:true, base:"ASSETS/boite_cuve.png", overlay:"ASSETS/cfd_velocity.png",
-          txt:"Survol/tap pour passer de la vue géométrique à l’overlay CFD (vitesse)." },
-
+        { title:"Boîte – vue globale", img:"ASSETS/boite_cuve.png", txt:"Enveloppe et implantation générale." },
         { title:"Échangeur à ailettes", img:"ASSETS/echangeur_fins.png", txt:"Dimensions et orientation (20×20\")." },
+        { title:"CFD – vitesse", img:"ASSETS/cfd_velocity.png", txt:"Zones de jet / recirculations." },
         { title:"CFD – pression + streamlines", img:"ASSETS/cfd_pressure_streamlines.png", txt:"Lecture des pertes et structures d’écoulement." },
         { title:"CFD – température", img:"ASSETS/cfd_temperature.png", txt:"Distribution thermique qualitative." },
       ],
@@ -299,25 +257,12 @@
           ${arr.map(s => `
             <div class="box">
               <h3>${s.title}</h3>
-
-              ${s.morph ? `
-                <div class="morphImg" title="Survol/tap pour voir l'overlay CFD">
-                  <img class="base" src="${s.base}" alt="${s.title}"
-                       onerror="this.style.display='none'; this.parentElement.nextElementSibling.style.display='block';" />
-                  <img class="overlay" src="${s.overlay}" alt="Overlay CFD"
-                       onerror="this.style.display='none'; this.parentElement.nextElementSibling.style.display='block';" />
-                  <span class="morphHint">Survol : CFD</span>
-                </div>
-              ` : `
-                <img src="${s.img}" alt="${s.title}"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
-              `}
-
+              <img src="${s.img}" alt="${s.title}"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
               <div class="txt">${s.txt}</div>
-
               <div class="txt" style="display:none;color:#fb7185">
-                Image introuvable.<br/>
-                Vérifie <b>ASSETS/</b> et le nom du fichier (majuscules/minuscules).
+                Image introuvable: <b>${s.img}</b><br/>
+                Vérifie le dossier <b>ASSETS/</b> et le nom du fichier (majuscules/minuscules).
               </div>
             </div>
           `).join("")}
@@ -404,7 +349,7 @@
                   <div class="icon">📦</div>
                   <h3>Boîte</h3>
                 </div>
-                <p>Enveloppe, échangeur à ailettes et résultats CFD (morph overlay).</p>
+                <p>Enveloppe, échangeur à ailettes et résultats CFD (vitesse/pression/T).</p>
               </div>
 
               <div class="homeCard" onclick="state='diaphragm';render()">
