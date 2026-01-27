@@ -4,16 +4,17 @@
   <meta charset="UTF-8" />
   <title>Pompe à Chaleur - R718</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
     body{
       margin:0;
-      font-family:Arial,sans-serif;
-      background:linear-gradient(135deg,#0f172a,#020617);
-      color:#fff
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg,#0f172a,#020617);
+      color:#fff;
+      min-height:100vh;
     }
+
     .page{padding:20px;max-width:1100px;margin:auto}
     h1{font-size:20px;margin:0 0 14px}
 
@@ -81,7 +82,8 @@
       margin-top:10px;
       border-radius:10px;
       border:none;
-      font-size:14px
+      font-size:14px;
+      box-sizing:border-box;
     }
     input{
       background: rgba(255,255,255,.92);
@@ -90,9 +92,10 @@
     button{
       background:#38bdf8;
       font-weight:bold;
-      cursor:pointer
+      cursor:pointer;
     }
     button:hover{ filter: brightness(1.05); }
+
     .hint{
       margin-top:10px;
       font-size:12px;
@@ -113,7 +116,93 @@
     }
     .footer span{ white-space:nowrap; }
 
-    /* RESTE DU SITE */
+    /* HOME - RYTHME VISUEL (HERO + KPI + CARDS) */
+    .hero{
+      margin-top:14px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:16px;
+      box-shadow:0 18px 50px rgba(0,0,0,.28);
+    }
+    .heroTitle{
+      font-size:16px;
+      margin:0 0 6px;
+      color:#e2e8f0;
+    }
+    .heroTxt{
+      margin:0;
+      color:#cbd5e1;
+      font-size:13px;
+      line-height:1.45;
+    }
+    .kpis{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .kpi{
+      flex:1 1 220px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:12px;
+    }
+    .kpi b{color:#e2e8f0}
+    .kpi p{margin:6px 0 0;color:#cbd5e1;font-size:12px;line-height:1.35}
+
+    .homeGrid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:14px;
+      margin-top:14px;
+    }
+    .homeCard{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:14px;
+      cursor:pointer;
+      transition:transform .12s ease, background .12s ease;
+    }
+    .homeCard:hover{
+      background:rgba(255,255,255,.14);
+      transform:translateY(-2px);
+    }
+    .homeCardTop{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .icon{
+      width:36px;height:36px;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(56,189,248,.14);
+      border:1px solid rgba(56,189,248,.25);
+    }
+    .homeCard h3{
+      margin:0;
+      font-size:14px;
+      color:#e2e8f0;
+    }
+    .homeCard p{
+      margin:0;
+      font-size:12px;
+      color:#cbd5e1;
+      line-height:1.35;
+    }
+    .smallNote{
+      margin-top:14px;
+      color:#9ca3af;
+      font-size:11px;
+    }
+
+    /* SECTIONS */
     .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:14px}
     .card{background:rgba(255,255,255,.1);padding:16px;border-radius:14px;cursor:pointer}
     .card:hover{background:rgba(255,255,255,.18)}
@@ -129,160 +218,215 @@
 </head>
 
 <body>
-<div id="app"></div>
+  <div id="app"></div>
 
-<script>
-const PASSWORD = "IssaR718";
-let state = "login";
+  <script>
+    const PASSWORD = "IssaR718";
+    let state = "login";
 
-/* ✅ Mets ici le chemin exact de ton logo */
-const LOGO_SRC = "ASSETS/logo.jfif";
+    // ⚠️ Mets ici le nom exact de ton logo (dans ASSETS/)
+    const LOGO_SRC = "ASSETS/logo.jfif";
 
-const slides = {
-  diaphragm: [
-    { title:"Vue assemblée", img:"ASSETS/diaphragm_1.png", txt:"Présentation de l’ensemble et interfaces." },
-    { title:"Vue intérieure", img:"ASSETS/diaphragm_2.png", txt:"Éléments internes / volume utile." },
-    { title:"Diaphragm (photo)", img:"ASSETS/diaphragm_photo.png", txt:"Diaphragm – rôle + réglage (à détailler si besoin)." },
-  ],
-  boite: [
-    { title:"Boîte – vue globale", img:"ASSETS/boite_cuve.png", txt:"Enveloppe et implantation générale." },
-    { title:"Échangeur à ailettes", img:"ASSETS/echangeur_fins.png", txt:"Dimensions et orientation (20×20\")." },
-    { title:"CFD – vitesse", img:"ASSETS/cfd_velocity.png", txt:"Zones de jet / recirculations." },
-    { title:"CFD – pression + streamlines", img:"ASSETS/cfd_pressure_streamlines.png", txt:"Lecture des pertes et structures d’écoulement." },
-    { title:"CFD – température", img:"ASSETS/cfd_temperature.png", txt:"Distribution thermique qualitative." },
-  ],
-  capteur: [
-    { title:"Principe ΔP (visuel CFD)", img:"ASSETS/cfd_pressure_streamlines.png", txt:"Base pour positionnement des prises de pression." },
-    { title:"Justification (vitesse)", img:"ASSETS/cfd_velocity.png", txt:"Éviter zones de recirculation non représentatives." },
-  ],
-  turbo: [
-    { title:"Vue d’ensemble turbo", img:"ASSETS/turbo_exploded.png", txt:"Architecture et intégration dans le banc." },
-    { title:"Diaphragm – réglage", img:"ASSETS/diaphragm_photo.png", txt:"Pièce de réglage influençant les conditions d’écoulement." },
-  ]
-};
+    const slides = {
+      diaphragm: [
+        { title:"Vue assemblée", img:"ASSETS/diaphragm_1.png", txt:"Présentation de l’ensemble et interfaces." },
+        { title:"Vue intérieure", img:"ASSETS/diaphragm_2.png", txt:"Éléments internes / volume utile." },
+        { title:"Diaphragm (photo)", img:"ASSETS/diaphragm_photo.png", txt:"Diaphragm – rôle + réglage (à détailler si besoin)." },
+      ],
+      boite: [
+        { title:"Boîte – vue globale", img:"ASSETS/boite_cuve.png", txt:"Enveloppe et implantation générale." },
+        { title:"Échangeur à ailettes", img:"ASSETS/echangeur_fins.png", txt:"Dimensions et orientation (20×20\")." },
+        { title:"CFD – vitesse", img:"ASSETS/cfd_velocity.png", txt:"Zones de jet / recirculations." },
+        { title:"CFD – pression + streamlines", img:"ASSETS/cfd_pressure_streamlines.png", txt:"Lecture des pertes et structures d’écoulement." },
+        { title:"CFD – température", img:"ASSETS/cfd_temperature.png", txt:"Distribution thermique qualitative." },
+      ],
+      capteur: [
+        { title:"Principe ΔP (visuel CFD)", img:"ASSETS/cfd_pressure_streamlines.png", txt:"Base pour positionnement des prises de pression." },
+        { title:"Justification (vitesse)", img:"ASSETS/cfd_velocity.png", txt:"Éviter zones de recirculation non représentatives." },
+      ],
+      turbo: [
+        { title:"Vue d’ensemble turbo", img:"ASSETS/turbo_exploded.png", txt:"Architecture et intégration dans le banc." },
+        { title:"Diaphragm – réglage", img:"ASSETS/diaphragm_photo.png", txt:"Pièce de réglage influençant les conditions d’écoulement." },
+      ]
+    };
 
-function renderSlides(key){
-  const arr = slides[key] || [];
-  return `
-    <div class="grid">
-      ${arr.map(s => `
-        <div class="box">
-          <h3>${s.title}</h3>
-          <img src="${s.img}" alt="${s.title}"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
-          <div class="txt">${s.txt}</div>
-          <div class="txt" style="display:none;color:#fb7185">
-            Image introuvable: <b>${s.img}</b><br/>
-            Vérifie le dossier <b>ASSETS/</b> et le nom du fichier (majuscules/minuscules).
+    function renderSlides(key){
+      const arr = slides[key] || [];
+      return `
+        <div class="grid">
+          ${arr.map(s => `
+            <div class="box">
+              <h3>${s.title}</h3>
+              <img src="${s.img}" alt="${s.title}"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+              <div class="txt">${s.txt}</div>
+              <div class="txt" style="display:none;color:#fb7185">
+                Image introuvable: <b>${s.img}</b><br/>
+                Vérifie le dossier <b>ASSETS/</b> et le nom du fichier (majuscules/minuscules).
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function render(){
+      const app = document.getElementById("app");
+
+      if(state==="login"){
+        app.innerHTML = `
+          <div class="login">
+            <div class="loginTop">
+              <div class="logoWrap">
+                <img src="${LOGO_SRC}" alt="Logo projet R718"
+                  onerror="this.style.display='none'; this.parentElement.style.background='rgba(255,255,255,.06)';" />
+              </div>
+              <div>
+                <h1 class="loginTitle">Pompe à Chaleur – R718</h1>
+                <p class="subtitle">Prototype expérimental à turbocompresseur refroidi</p>
+              </div>
+            </div>
+
+            <div class="badge">🔒 Accès technique</div>
+
+            <input id="pw" type="password" placeholder="Mot de passe" />
+            <button onclick="check()">Entrer</button>
+
+            <p id="err" style="color:#fb7185;display:none;margin-top:10px;text-align:center">
+              Mot de passe incorrect
+            </p>
+
+            <p class="hint">Réservé aux partenaires et encadrants du projet</p>
+
+            <div class="footer">
+              <span>Projet R718 – Banc expérimental</span>
+              <span>Version v1.0</span>
+            </div>
           </div>
-        </div>
-      `).join("")}
-    </div>
-  `;
-}
+        `;
+        return;
+      }
 
-function render(){
-  const app = document.getElementById("app");
+      if(state==="home"){
+        app.innerHTML = `
+          <div class="page">
+            <h1>Pompe à Chaleur - R718</h1>
 
-  if(state==="login"){
-    app.innerHTML = `
-      <div class="login">
-        <div class="loginTop">
-          <div class="logoWrap">
-            <img src="${LOGO_SRC}" alt="Logo projet R718"
-                 onerror="this.style.display='none'; this.parentElement.style.background='rgba(255,255,255,.06)';" />
+            <div class="hero">
+              <div class="heroTitle">Présentation technique</div>
+              <p class="heroTxt">
+                Interface de démonstration du banc expérimental R718 (eau) :
+                turbocompresseur refroidi, boîte de test et instrumentation ΔP.
+              </p>
+
+              <div class="kpis">
+                <div class="kpi">
+                  <b>Réfrigérant : R718</b>
+                  <p>Eau – solution naturelle, compatible prototype labo.</p>
+                </div>
+                <div class="kpi">
+                  <b>Refroidissement turbo</b>
+                  <p>Stator • Rotor • Inter-étage (3 cycles de refroidissement).</p>
+                </div>
+                <div class="kpi">
+                  <b>Mesures & validation</b>
+                  <p>CFD + capteur de pression différentielle (ΔP).</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="homeGrid">
+              <div class="homeCard" onclick="state='turbo';render()">
+                <div class="homeCardTop">
+                  <div class="icon">🌀</div>
+                  <h3>Turbo</h3>
+                </div>
+                <p>Vue 3D + slides : architecture, refroidissements, spray cooling.</p>
+              </div>
+
+              <div class="homeCard" onclick="state='boite';render()">
+                <div class="homeCardTop">
+                  <div class="icon">📦</div>
+                  <h3>Boîte</h3>
+                </div>
+                <p>Enveloppe, échangeur à ailettes et résultats CFD (vitesse/pression/T).</p>
+              </div>
+
+              <div class="homeCard" onclick="state='diaphragm';render()">
+                <div class="homeCardTop">
+                  <div class="icon">⚙️</div>
+                  <h3>Diaphragm</h3>
+                </div>
+                <p>Vue assemblée, vue intérieure et photo de la pièce.</p>
+              </div>
+
+              <div class="homeCard" onclick="state='capteur';render()">
+                <div class="homeCardTop">
+                  <div class="icon">📐</div>
+                  <h3>Capteur ΔP</h3>
+                </div>
+                <p>Principe, positionnement des prises et justification via CFD.</p>
+              </div>
+            </div>
+
+            <div class="smallNote">
+              Astuce : sur mobile, pincer pour zoomer la 3D et glisser pour tourner.
+            </div>
           </div>
-          <div>
-            <h1 class="loginTitle">Pompe à Chaleur – R718</h1>
-            <p class="subtitle">Prototype expérimental à turbocompresseur refroidi</p>
+        `;
+        return;
+      }
+
+      if(state==="turbo"){
+        app.innerHTML = `
+          <div class="page">
+            <div class="back" onclick="state='home';render()">← Retour</div>
+            <h1>Turbo</h1>
+            <div class="pill">Vue 3D + Slides</div>
+
+            <model-viewer
+              src="turbo_web.glb"
+              camera-controls
+              auto-rotate
+              environment-image="neutral"
+              exposure="1.1"
+              shadow-intensity="0.8"
+              style="width:100%; height:420px; background:#111; border-radius:12px;">
+            </model-viewer>
+
+            <div class="txt">Si la 3D ne s’affiche pas, vérifie que <b>turbo_web.glb</b> est à côté de <b>index.html</b>.</div>
+
+            <h1 style="font-size:16px;margin-top:18px">Slides</h1>
+            ${renderSlides("turbo")}
           </div>
+        `;
+        return;
+      }
+
+      app.innerHTML = `
+        <div class="page">
+          <div class="back" onclick="state='home';render()">← Retour</div>
+          <h1>${state.toUpperCase()}</h1>
+          ${renderSlides(state)}
         </div>
+      `;
+    }
 
-        <div class="badge">🔒 Accès technique</div>
+    function check(){
+      const pwEl = document.getElementById("pw");
+      const pw = pwEl.value;
 
-        <input id="pw" type="password" placeholder="Mot de passe" />
-        <button onclick="check()">Entrer</button>
+      if(pw === PASSWORD){
+        state = "home";
+        render();
+      } else {
+        document.getElementById("err").style.display = "block";
+        pwEl.focus();
+        pwEl.select();
+      }
+    }
 
-        <p id="err" style="color:#fb7185;display:none;margin-top:10px;text-align:center">
-          Mot de passe incorrect
-        </p>
-
-        <p class="hint">Réservé aux partenaires et encadrants du projet</p>
-
-        <div class="footer">
-          <span>Projet R718 – Banc expérimental</span>
-          <span>Version v1.0</span>
-        </div>
-      </div>
-    `;
-    return;
-  }
-
-  if(state==="home"){
-    app.innerHTML = `
-      <div class="page">
-        <h1>Pompe à Chaleur - R718</h1>
-        <div class="cards">
-          <div class="card" onclick="state='turbo';render()">🌀 Turbo</div>
-          <div class="card" onclick="state='boite';render()">📦 Boîte</div>
-          <div class="card" onclick="state='diaphragm';render()">⚙️ Diaphragm</div>
-          <div class="card" onclick="state='capteur';render()">📐 Capteur P diff</div>
-        </div>
-      </div>
-    `;
-    return;
-  }
-
-  if(state==="turbo"){
-    app.innerHTML = `
-      <div class="page">
-        <div class="back" onclick="state='home';render()">← Retour</div>
-        <h1>Turbo</h1>
-        <div class="pill">Vue 3D + Slides</div>
-
-        <model-viewer
-          src="turbo_web.glb"
-          camera-controls
-          auto-rotate
-          environment-image="neutral"
-          exposure="1.1"
-          shadow-intensity="0.8"
-          style="width:100%; height:420px; background:#111; border-radius:12px;">
-        </model-viewer>
-
-        <div class="txt">Si la 3D ne s’affiche pas, vérifie que <b>turbo_web.glb</b> est à côté de <b>index.html</b>.</div>
-
-        <h1 style="font-size:16px;margin-top:18px">Slides</h1>
-        ${renderSlides("turbo")}
-      </div>
-    `;
-    return;
-  }
-
-  app.innerHTML = `
-    <div class="page">
-      <div class="back" onclick="state='home';render()">← Retour</div>
-      <h1>${state.toUpperCase()}</h1>
-      ${renderSlides(state)}
-    </div>
-  `;
-}
-
-function check(){
-  const pwEl = document.getElementById("pw");
-  const pw = pwEl.value;
-
-  if(pw===PASSWORD){
-    state="home";
     render();
-  } else {
-    document.getElementById("err").style.display="block";
-    pwEl.focus();
-    pwEl.select();
-  }
-}
-
-render();
-</script>
+  </script>
 </body>
 </html>
