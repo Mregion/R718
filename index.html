@@ -268,9 +268,9 @@
     echangeur: [
       { title: "Échangeur à ailettes", img: img("echangeur-fins.png"), txt: "PdC 0.2 mbar - écoulement vapeur d'eau." },
       { title: "Boîte – cuve", img: img("boite_cuve.png"), txt: "Intégration de l'échangeur dans la boîte." },
-      { title: "CFD – pression & lignes de courant", img: img("cfd_pressure_streamlines.png"), txt: "Répartition pression et écoulement." },
-      { title: "CFD – température", img: img("cfd_temperature.png"), txt: "Champs de température (vu de dessus)." },
-      { title: "CFD – vitesse", img: img("cfd_velocity.png"), txt: "Gradients de vitesse." }
+      { title: "CFD – Pression & lignes de courant", img: img("cfd_pressure_streamlines.png"), txt: "Répartition pression et écoulement." },
+      { title: "CFD – Température", img: img("cfd_temperature.png"), txt: "Champs de température (vu de dessus)." },
+      { title: "CFD – Vitesse", img: img("cfd_velocity.png"), txt: "Gradients de vitesse." }
     ],
     debit: [
       { title: "Capteur ΔP", img: img("capteur-p-diff.png"), txt: "Mesure ΔP : ≈3% d’incertitude." },
@@ -374,32 +374,32 @@
           <div class="homeGrid">
             <div class="homeCard" onclick="state='visualisation';render()">
               <div class="homeCardTop"><div class="icon">🗺️</div><h3>1) Visualisation </h3></div>
-              <p>Schémas 2D/3D + cycle thermodynamique.</p>
+              <p>Schémas 2D/3D – Cycle Thermodynamique.</p>
             </div>
 
             <div class="homeCard" onclick="state='turbo';render()">
               <div class="homeCardTop"><div class="icon">🌀</div><h3>2) Turbo</h3></div>
-              <p>Modèle 3D - Cycle Interne - Refroidissement).</p>
+              <p>Modèle 3D – Cycle Interne – Refroidissement).</p>
             </div>
 
             <div class="homeCard" onclick="state='echangeur';render()">
               <div class="homeCardTop"><div class="icon">🔥</div><h3>3) Échangeur de Chaleur</h3></div>
-              <p>Échangeur à ailettes, boîte/cuve, et résultats CFD.</p>
+              <p>Échangeur à ailettes – Boîte/cuve – Résultats CFD.</p>
             </div>
 
             <div class="homeCard" onclick="state='debit';render()">
               <div class="homeCardTop"><div class="icon">📏</div><h3>4) Mesure de débit</h3></div>
-              <p>Mesure ΔP - C PD - CFD - modèle 3D CFD.</p>
+              <p>Mesure ΔP – C PD – CFD – Modèle 3D.</p>
             </div>
 
             <div class="homeCard" onclick="state='carac_turbo';render()">
               <div class="homeCardTop"><div class="icon">⚙️</div><h3>5) Caractérisation turbo</h3></div>
-              <p>Génération de pertes de charge - Vanne.</p>
+              <p>Génération de pertes de charge – Vanne.</p>
             </div>
 
             <div class="homeCard" onclick="state='vide';render()">
               <div class="homeCardTop"><div class="icon">🧪</div><h3>6) Vide Technos</h3></div>
-              <p>Soudure TIG, étanchéité, outils Fullvac, vide primaire.</p>
+              <p>Soudure TIG – Etanchéité – Outils Fullvac – Vide Primaire.</p>
             </div>
           </div>
         </div>
@@ -557,5 +557,6 @@
 </script>
 </body>
 </html>
+
 
 
