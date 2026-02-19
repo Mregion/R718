@@ -278,6 +278,7 @@
     ],
     carac_turbo: [
       { title: "Diaphragm Circulaire", img: img("diaphragm_photo.png"), txt: "Pièce de réglage interne / génération de pertes de charge." },
+      { title: "Diaphragm – Gorge d’intégration", img: img("diaphragm_gorge.png"), txt: "Brides avec gorge de fixation pour insérer le diaphragm et gorge dédiée au joint d’étanchéité." },
       { title: "Caractérisation turbo", img: img("carac_turbo.png"), txt: "Points d’opération via pertes de charge contrôlées." }
     ],
     vide: [
@@ -298,6 +299,12 @@
         img: img("micropompe.png"),
         txt: "Micropompe pour le vide primaire.",
         desc: "Débit jusqu’à 2800 mL/min • Pression max ~300 mbar • Puissance ~5 W."
+      },
+      {
+        title: "Brides avec gorge pour diaphragm",
+        img: img("diaphragm_gorge.png"),
+        txt: "Brides d’intégration du diaphragm.",
+        desc: "Brides avec une gorge pour fixer le diaphragm dedans, et une autre gorge pour déposer un joint d’étanchéité."
       }
     ]
   };
@@ -360,8 +367,7 @@
           ${renderHeader()}
           <div class="hero">
             <div class="heroTitle">Présentation technique / contexte</div>
-            <p class="heroTxt">
-            </p>
+            <p class="heroTxt"></p>
             <ul class="obj">
               <li><b>Banc expérimental R718</b></li>
               <li><b>Caractérisation d’un turbocompresseur</b></li>
@@ -373,7 +379,7 @@
 
           <div class="homeGrid">
             <div class="homeCard" onclick="state='visualisation';render()">
-              <div class="homeCardTop"><div class="icon">🗺️</div><h3>1) Visualisation </h3></div>
+              <div class="homeCardTop"><div class="icon">🗺️</div><h3>1) Visualisation</h3></div>
               <p>Schémas 2D/3D – Cycle Thermodynamique.</p>
             </div>
 
@@ -557,6 +563,3 @@
 </script>
 </body>
 </html>
-
-
-
