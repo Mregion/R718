@@ -8,7 +8,6 @@
 
   <style>
     :root{
-      --bgOverlay: rgba(2,6,23,.78);
       --card: rgba(255,255,255,.10);
       --line: rgba(255,255,255,.12);
       --text: #f8fafc;
@@ -21,6 +20,7 @@
 
     *{box-sizing:border-box}
     html,body{height:100%}
+
     body{
       margin:0;
       font-family: Arial, sans-serif;
@@ -28,21 +28,17 @@
       min-height:100vh;
       overflow-x:hidden;
 
-      /* ✅ Background (mets background.png dans ASSETS/) */
+      /* Background image */
       background:
         linear-gradient(135deg, rgba(2,6,23,.82), rgba(2,6,23,.62)),
-        url("ASSETS/background2.png");
+        url("ASSETS/background.png");
       background-position: center, center;
       background-size: cover, cover;
       background-repeat: no-repeat, no-repeat;
       background-attachment: fixed, fixed;
     }
 
-    .page{
-      padding:20px;
-      max-width:1100px;
-      margin:auto;
-    }
+    .page{padding:20px;max-width:1100px;margin:auto}
 
     /* Header with logo next to title */
     .topbar{
@@ -188,7 +184,7 @@
     }
     .box h3{margin:0 0 8px;font-size:14px;color:#e2e8f0}
 
-    /* ✅ Clickable images */
+    /* Clickable images */
     .media{
       width:100%;
       height:230px;
@@ -199,18 +195,8 @@
       cursor: zoom-in;
     }
 
-    .txt{
-      color:var(--muted);
-      font-size:13px;
-      margin-top:8px;
-      line-height:1.45;
-    }
-    .desc{
-      color:var(--muted2);
-      font-size:12px;
-      margin-top:6px;
-      line-height:1.45;
-    }
+    .txt{color:var(--muted);font-size:13px;margin-top:8px;line-height:1.45}
+    .desc{color:var(--muted2);font-size:12px;margin-top:6px;line-height:1.45}
 
     model-viewer{
       width:100%;
@@ -228,132 +214,45 @@
       text-align:center;
     }
 
-    /* ===========================
-       ✅ Lightbox (zoom viewer)
-       =========================== */
+    /* ===== Lightbox simple ===== */
     .lightbox{
       position:fixed;
       inset:0;
-      background: rgba(0,0,0,.82);
+      background:rgba(0,0,0,.9);
       display:none;
       align-items:center;
       justify-content:center;
       z-index:9999;
+      cursor:pointer;
       padding:18px;
     }
     .lightbox.open{display:flex}
-
-    .lightboxPanel{
-      width:min(1100px, 96vw);
-      height:min(760px, 88vh);
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:16px;
-      box-shadow: 0 20px 70px rgba(0,0,0,.55);
-      backdrop-filter: blur(10px);
-      display:flex;
-      flex-direction:column;
-      overflow:hidden;
+    .lightbox img{
+      max-width:95%;
+      max-height:95%;
+      object-fit:contain;
     }
-    .lightboxTop{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:10px 12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-    }
-    .lbTitle{
-      font-size:12px;
-      color: var(--muted);
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-      max-width:60%;
-    }
-    .lbBtns{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-    .lbBtn{
-      border:none;
-      border-radius:10px;
-      padding:8px 10px;
-      cursor:pointer;
-      background: rgba(56,189,248,.18);
-      border:1px solid rgba(56,189,248,.22);
-      color: var(--text);
-      font-weight:700;
-      font-size:12px;
-    }
-    .lbBtn.secondary{
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      font-weight:600;
-    }
-
-    .lightboxBody{
-      position:relative;
-      flex:1;
-      overflow:auto; /* ✅ important for zoom */
-      background: rgba(0,0,0,.35);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .lbImg{
-      max-width:none; /* allow scaling beyond container */
-      max-height:none;
-      width:auto;
-      height:auto;
-      transform-origin: center center;
-      will-change: transform;
-      user-select:none;
-      -webkit-user-drag:none;
-      cursor: grab;
-    }
-    .lbImg:active{cursor: grabbing}
 
     @media (max-width:520px){
       .page{padding:14px}
       model-viewer{height:340px}
       .media{height:210px}
       h1{font-size:16px}
-      .lbTitle{max-width:45%}
     }
   </style>
 </head>
 
 <body>
-<div id="app"></div>
+  <div id="app"></div>
 
-<!-- ✅ Lightbox DOM -->
-<div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
-  <div class="lightboxPanel" onclick="event.stopPropagation()">
-    <div class="lightboxTop">
-      <div id="lbTitle" class="lbTitle">Image</div>
-      <div class="lbBtns">
-        <button class="lbBtn secondary" onclick="resetZoom()">Reset</button>
-        <button class="lbBtn" onclick="zoomBy(1.2)">+</button>
-        <button class="lbBtn" onclick="zoomBy(1/1.2)">−</button>
-        <button class="lbBtn secondary" onclick="downloadCurrent()">Télécharger</button>
-        <button class="lbBtn secondary" onclick="closeLightbox()">Fermer ✕</button>
-      </div>
-    </div>
-    <div id="lbBody" class="lightboxBody">
-      <img id="lbImg" class="lbImg" alt="zoom">
-    </div>
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <img id="lightboxImg" alt="image">
   </div>
-</div>
 
 <script>
-  // Accès direct : pas de login
   let state = "home";
   const LOGO_SRC = "ASSETS/logo.jfif";
-
-  // Helpers
   const img = (name) => `ASSETS/${name}`;
 
   const slides = {
@@ -424,7 +323,7 @@
         ${slides[key].map(s => `
           <div class="box">
             <h3>${s.title}</h3>
-            <img class="media" src="${s.img}" alt="${s.title}" data-full="${s.img}">
+            <img class="media" src="${s.img}" alt="${s.title}">
             <div class="txt">${s.txt || ""}</div>
             ${s.desc ? `<div class="desc">${s.desc}</div>` : ""}
           </div>
@@ -433,14 +332,24 @@
     `;
   }
 
+  // Lightbox simple
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightboxImg");
+
   function attachImageLightbox(){
-    // bind click on any .media image (after each render)
     document.querySelectorAll("img.media").forEach(el=>{
-      el.addEventListener("click", () => {
-        openLightbox(el.getAttribute("data-full") || el.src, el.alt || "Image");
+      el.addEventListener("click", ()=>{
+        lightboxImg.src = el.src;
+        lightbox.classList.add("open");
       });
     });
   }
+  function closeLightbox(){
+    lightbox.classList.remove("open");
+  }
+  window.addEventListener("keydown",(e)=>{
+    if(e.key==="Escape") closeLightbox();
+  });
 
   function render(){
     const app = document.getElementById("app");
@@ -449,7 +358,6 @@
       app.innerHTML = `
         <div class="page">
           ${renderHeader()}
-
           <div class="hero">
             <div class="heroTitle">Présentation technique / contexte</div>
             <p class="heroTxt">
@@ -509,9 +417,7 @@
           <div class="back" onclick="state='home';render()">← Retour</div>
           <h1>1) Visualisation 2D • 3D • Cycle</h1>
           <div class="pill">Schémas & cycle</div>
-          <div class="sectionIntro">
-            Vue d’ensemble du banc : représentation 2D/3D et cycle thermodynamique.
-          </div>
+          <div class="sectionIntro">Vue d’ensemble du banc : représentation 2D/3D et cycle thermodynamique.</div>
           ${renderSlides("visualisation")}
         </div>
       `;
@@ -526,10 +432,7 @@
           <div class="back" onclick="state='home';render()">← Retour</div>
           <h1>2) Turbo</h1>
           <div class="pill">Modèle 3D interactif</div>
-
-          <div class="sectionIntro">
-            <b>Présentation :</b> 2 étages • 90 000 rpm • Compatible avec le R718
-          </div>
+          <div class="sectionIntro"><b>Présentation :</b> 2 étages • 90 000 rpm • Compatible avec le R718</div>
 
           <model-viewer
             src="turbo_web.glb"
@@ -556,11 +459,9 @@
           <div class="back" onclick="state='home';render()">← Retour</div>
           <h1>3) Échangeur à chaleur • Boîte • CFD</h1>
           <div class="pill">Échangeur + résultats CFD</div>
-
           <div class="sectionIntro">
             Nouveau modèle d’échangeur à chaleur, intégration dans la boîte, et visualisations CFD (pression, vitesse, température).
           </div>
-
           ${renderSlides("echangeur")}
         </div>
       `;
@@ -575,7 +476,6 @@
           <div class="back" onclick="state='home';render()">← Retour</div>
           <h1>4) Mesure de débit</h1>
           <div class="pill">ΔP dans le tuyau + instrumentation</div>
-
           <div class="sectionIntro">
             Mesure du débit en mesurant <b>ΔP</b> dans le tuyau, avec <b>deux capteurs de pression précis</b>
             et un <b>capteur de pression différentielle</b> (~<b>3%</b> d’incertitude).
@@ -607,11 +507,9 @@
           <div class="back" onclick="state='home';render()">← Retour</div>
           <h1>5) Caractérisation de turbo</h1>
           <div class="pill">Points d’opération</div>
-
           <div class="sectionIntro">
             Caractérisation en générant des <b>pertes de charge</b> afin d’obtenir différents <b>points d’opération</b>.
           </div>
-
           ${renderSlides("carac_turbo")}
         </div>
       `;
@@ -626,7 +524,6 @@
           <div class="back" onclick="state='home';render()">← Retour</div>
           <h1>6) Vide Technos</h1>
           <div class="pill">Étanchéité & vide primaire</div>
-
           <div class="sectionIntro">
             Pour cette manip, nous avons utilisé des moyens plus rassurants pour l’étanchéité :
             <b>soudure TIG</b> partout et des <b>outils pour le vide primaire</b>.
@@ -658,101 +555,7 @@
     }
   }
 
-  // ===========================
-  // ✅ Lightbox + Zoom logic
-  // ===========================
-  const lightbox = document.getElementById("lightbox");
-  const lbImg = document.getElementById("lbImg");
-  const lbTitle = document.getElementById("lbTitle");
-  const lbBody = document.getElementById("lbBody");
-
-  let currentSrc = "";
-  let scale = 1;
-
-  // drag to pan
-  let isDragging = false;
-  let startX = 0, startY = 0;
-  let scrollLeft = 0, scrollTop = 0;
-
-  function openLightbox(src, title){
-    currentSrc = src;
-    scale = 1;
-    lbImg.style.transform = `scale(${scale})`;
-    lbImg.src = src;
-    lbTitle.textContent = title || "Image";
-    lightbox.classList.add("open");
-
-    // reset scroll to center-ish
-    requestAnimationFrame(() => {
-      lbBody.scrollTop = (lbBody.scrollHeight - lbBody.clientHeight)/2;
-      lbBody.scrollLeft = (lbBody.scrollWidth - lbBody.clientWidth)/2;
-    });
-  }
-
-  function closeLightbox(e){
-    // if called from backdrop click
-    lightbox.classList.remove("open");
-  }
-
-  function zoomBy(factor){
-    scale *= factor;
-    scale = Math.max(0.4, Math.min(scale, 6));
-    lbImg.style.transform = `scale(${scale})`;
-  }
-
-  function resetZoom(){
-    scale = 1;
-    lbImg.style.transform = `scale(${scale})`;
-    lbBody.scrollTop = 0;
-    lbBody.scrollLeft = 0;
-  }
-
-  function downloadCurrent(){
-    if(!currentSrc) return;
-    const a = document.createElement("a");
-    a.href = currentSrc;
-    a.download = (lbTitle.textContent || "image") + ".png";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  }
-
-  // Mouse wheel zoom
-  lbBody.addEventListener("wheel", (e)=>{
-    if(!lightbox.classList.contains("open")) return;
-    e.preventDefault();
-    const factor = (e.deltaY < 0) ? 1.12 : (1/1.12);
-    zoomBy(factor);
-  }, { passive:false });
-
-  // Drag to pan (desktop)
-  lbBody.addEventListener("mousedown", (e)=>{
-    if(!lightbox.classList.contains("open")) return;
-    isDragging = true;
-    startX = e.pageX;
-    startY = e.pageY;
-    scrollLeft = lbBody.scrollLeft;
-    scrollTop = lbBody.scrollTop;
-  });
-  window.addEventListener("mouseup", ()=>{ isDragging = false; });
-  lbBody.addEventListener("mousemove", (e)=>{
-    if(!isDragging) return;
-    e.preventDefault();
-    const dx = e.pageX - startX;
-    const dy = e.pageY - startY;
-    lbBody.scrollLeft = scrollLeft - dx;
-    lbBody.scrollTop = scrollTop - dy;
-  });
-
-  // ESC to close
-  window.addEventListener("keydown", (e)=>{
-    if(e.key === "Escape" && lightbox.classList.contains("open")){
-      closeLightbox();
-    }
-  });
-
   render();
 </script>
 </body>
 </html>
-
