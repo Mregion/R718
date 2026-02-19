@@ -7,101 +7,238 @@
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
+    :root{
+      --bgOverlay: rgba(2,6,23,.78);
+      --card: rgba(255,255,255,.10);
+      --card2: rgba(255,255,255,.14);
+      --line: rgba(255,255,255,.12);
+      --text: #f8fafc;
+      --muted:#cbd5e1;
+      --muted2:#9ca3af;
+      --accent:#38bdf8;
+      --radius: 16px;
+      --shadow: 0 20px 60px rgba(0,0,0,.40);
+    }
+
+    *{box-sizing:border-box}
     body{
       margin:0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg,#0f172a,#020617);
-      color:#fff;
+      color:var(--text);
       min-height:100vh;
+      background:#020617;
+      position:relative;
+      overflow-x:hidden;
     }
-    .page{padding:20px;max-width:1100px;margin:auto}
-    h1{font-size:20px;margin:0 0 14px}
 
-    /* LOGIN */
-    .login{
-      max-width:460px;
-      margin:110px auto;
-      background:rgba(255,255,255,.08);
-      padding:22px;
-      border-radius:16px;
-      box-shadow:0 20px 60px rgba(0,0,0,.35);
-      border:1px solid rgba(255,255,255,.08);
+    /* Background image + dark overlay */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:url("background.png") center/cover no-repeat;
+      z-index:-2;
+      transform:scale(1.02);
+    }
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:linear-gradient(135deg, rgba(2,6,23,.82), rgba(2,6,23,.62));
+      z-index:-1;
+    }
+
+    .page{
+      padding:20px;
+      max-width:1100px;
+      margin:auto;
+    }
+
+    /* Header with logo next to title */
+    .topbar{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:14px 14px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.08);
+      border:1px solid var(--line);
+      box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
     }
-    .loginTop{display:flex;gap:14px;margin-bottom:14px}
     .logoWrap{
-      width:64px;height:64px;border-radius:14px;
+      width:48px;height:48px;border-radius:12px;
       background:rgba(255,255,255,.08);
+      border:1px solid var(--line);
       display:flex;align-items:center;justify-content:center;
-      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      flex:0 0 auto;
     }
     .logoWrap img{width:100%;height:100%;object-fit:contain}
-    .loginTitle{margin:0;font-size:20px}
-    .subtitle{margin:6px 0 0;font-size:13px;color:#cbd5e1}
+    .topTitles{min-width:0}
+    .titleRow{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    h1{
+      font-size:18px;
+      margin:0;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:4px 0 0;
+      font-size:12px;
+      color:var(--muted);
+    }
     .badge{
-      display:inline-block;padding:6px 10px;border-radius:999px;
-      background:rgba(255,255,255,.08);font-size:12px;margin:10px 0
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      border:1px solid var(--line);
+      font-size:12px;
+      color:var(--muted);
     }
-    input,button{width:100%;padding:12px;margin-top:10px;border-radius:10px;border:none}
-    input{background:#fff}
-    button{background:#38bdf8;font-weight:bold;cursor:pointer}
-    .hint{text-align:center;font-size:12px;color:#9ca3af;margin-top:10px}
 
-    /* HOME */
+    /* Hero */
     .hero{
-      margin-top:14px;background:rgba(255,255,255,.08);
-      border-radius:16px;padding:16px
+      margin-top:14px;
+      background:rgba(255,255,255,.08);
+      border-radius:var(--radius);
+      padding:16px;
+      border:1px solid var(--line);
+      box-shadow: 0 12px 40px rgba(0,0,0,.25);
+      backdrop-filter: blur(10px);
     }
-    .heroTitle{font-size:16px;margin-bottom:6px}
-    .heroTxt{font-size:13px;color:#cbd5e1}
+    .heroTitle{font-size:15px;margin:0 0 8px}
+    .heroTxt{margin:0;font-size:13px;color:var(--muted);line-height:1.45}
+    .obj{
+      margin:10px 0 0;
+      padding-left:18px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+    .obj li{margin:4px 0}
 
+    /* Home grid */
     .homeGrid{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:14px;margin-top:14px
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:14px;
+      margin-top:14px
     }
     .homeCard{
       background:rgba(255,255,255,.08);
-      border-radius:16px;padding:14px;cursor:pointer
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      cursor:pointer;
+      box-shadow: 0 10px 30px rgba(0,0,0,.22);
+      backdrop-filter: blur(10px);
+      transition: transform .12s ease, background .12s ease;
+      min-height:120px;
     }
-    .homeCard:hover{background:rgba(255,255,255,.14)}
+    .homeCard:hover{
+      background:rgba(255,255,255,.14);
+      transform: translateY(-1px);
+    }
     .homeCardTop{display:flex;align-items:center;gap:10px;margin-bottom:8px}
     .icon{
       width:36px;height:36px;border-radius:12px;
       display:flex;align-items:center;justify-content:center;
-      background:rgba(56,189,248,.14)
+      background:rgba(56,189,248,.14);
+      border:1px solid rgba(56,189,248,.18);
+      flex:0 0 auto;
     }
+    .homeCard h3{margin:0;font-size:14px}
+    .homeCard p{margin:0;color:var(--muted);font-size:13px;line-height:1.35}
 
-    /* SECTIONS */
-    .back{margin-bottom:15px;cursor:pointer;color:#7dd3fc}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-    .box{background:rgba(255,255,255,.08);border-radius:14px;padding:12px}
-    .box h3{margin:0 0 8px;font-size:14px;color:#e2e8f0}
-    img{width:100%;height:220px;object-fit:contain;background:#000;border-radius:10px}
-    .txt{color:#cbd5e1;font-size:13px;margin-top:8px}
-
-    model-viewer{
-      width:100%;
-      height:420px;
-      background:#111;
-      border-radius:12px;
-      margin-top:15px
+    /* Sections */
+    .back{
+      margin:12px 0 14px;
+      cursor:pointer;
+      color:#7dd3fc;
+      user-select:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
     }
-
     .pill{
       display:inline-block;
       padding:6px 10px;
       border-radius:999px;
       background:rgba(255,255,255,.08);
+      border:1px solid var(--line);
       font-size:12px;
-      margin-bottom:10px
+      margin:10px 0 6px;
+      color:var(--muted);
+    }
+    .sectionIntro{
+      margin:8px 0 14px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
     }
 
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:14px;
+    }
+    .box{
+      background:rgba(255,255,255,.08);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.22);
+      backdrop-filter: blur(10px);
+    }
+    .box h3{margin:0 0 8px;font-size:14px;color:#e2e8f0}
+    .media{
+      width:100%;
+      height:230px;
+      object-fit:contain;
+      background:rgba(0,0,0,.55);
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .txt{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:8px;
+      line-height:1.45;
+    }
+    .desc{
+      color:var(--muted2);
+      font-size:12px;
+      margin-top:6px;
+      line-height:1.45;
+    }
+
+    model-viewer{
+      width:100%;
+      height:420px;
+      background:rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:12px;
+      margin-top:12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
     .hint3d{
       margin-top:8px;
       font-size:12px;
-      color:#9ca3af;
+      color:var(--muted2);
       text-align:center;
+    }
+
+    @media (max-width:520px){
+      .page{padding:14px}
+      model-viewer{height:340px}
+      .media{height:210px}
+      h1{font-size:16px}
     }
   </style>
 </head>
@@ -110,179 +247,312 @@
 <div id="app"></div>
 
 <script>
-const PASSWORD = "0";
-let state = "login";
-const LOGO_SRC = "ASSETS/logo.jfif";
+  // Accès direct : pas de login
+  let state = "home";
+  const LOGO_SRC = "ASSETS/logo.jfif";
 
-const slides = {
-  diaphragm:[
-    {title:"Vue assemblée",img:"ASSETS/diaphragm_1.png",txt:"Présentation de l’ensemble."},
-    {title:"Vue intérieure",img:"ASSETS/diaphragm_2.png",txt:"Éléments internes."}
-  ],
-  boite:[
-    {title:"Boîte – vue globale",img:"ASSETS/boite_cuve.png",txt:"Implantation générale."},
-    {title:"CFD – vitesse",img:"ASSETS/cfd_velocity.png",txt:"Zones de jet et recirculation."}
-  ],
-  capteur:[
-    {title:"Justification (vitesse)",img:"ASSETS/cfd_velocity.png",txt:"Zones représentatives du ΔP."}
-  ],
-  turbo:[
-    {title:"Architecture",img:"ASSETS/turbo_exploded.png",txt:"Vue éclatée du turbo."}
-  ]
-};
+  // Helpers
+  const img = (name) => `ASSETS/${name}`;
 
-function renderSlides(key){
-  return `
-    <div class="grid">
-      ${slides[key].map(s=>`
-        <div class="box">
-          <h3>${s.title}</h3>
-          <img src="${s.img}">
-          <div class="txt">${s.txt}</div>
-        </div>
-      `).join("")}
-    </div>
-  `;
-}
+  const slides = {
+    visualisation: [
+      { title: "Visualisation 2D", img: img("2D.png"), txt: "Schéma 2D du banc et des sous-ensembles." },
+      { title: "Visualisation 3D", img: img("3D.png"), txt: "Vue 3D pour l’implantation et l’intégration." },
+      { title: "Cycle thermodynamique", img: img("cycle-thermodynamique.png"), txt: "Cycle et points de fonctionnement." }
+    ],
 
-function render(){
-  const app = document.getElementById("app");
+    turbo: [
+      { title: "Architecture", img: img("turbo_exploded.png"), txt: "Vue éclatée / architecture du turbo." },
+      { title: "Turbo – intérieur", img: img("turbo-int.png"), txt: "Vue interne / éléments principaux." }
+    ],
 
-  if(state==="login"){
-    app.innerHTML = `
-      <div class="login">
-        <div class="loginTop">
-          <div class="logoWrap"><img src="${LOGO_SRC}"></div>
-          <div>
-            <h1 class="loginTitle">Pompe à Chaleur – R718</h1>
-            <p class="subtitle">Prototype expérimental</p>
+    echangeur: [
+      { title: "Échangeur – ailettes (fins)", img: img("echangeur-fins.png"), txt: "Nouveau modèle d’échangeur à chaleur." },
+      { title: "Boîte – cuve", img: img("boite-cuve.png"), txt: "Boîte/volume principal et intégration." },
+      { title: "CFD – pression & lignes de courant", img: img("cfd_pressure_streamlines.png"), txt: "Répartition pression et écoulement." },
+      { title: "CFD – température", img: img("cfd_temperature.png"), txt: "Champs de température et zones critiques." },
+      { title: "CFD – vitesse", img: img("cfd_velocity.png"), txt: "Jets, recirculations et gradients de vitesse." }
+    ],
+
+    debit: [
+      { title: "Capteur ΔP", img: img("capteur-p-diff.png"), txt: "Mesure ΔP : capteurs précis + capteur différentiel (≈3% d’incertitude)." },
+      { title: "CFD – tuyau", img: img("cfd-tuyau.png"), txt: "CFD support pour le positionnement/lecture ΔP." }
+    ],
+
+    carac_turbo: [
+      { title: "Diaphragm (photo)", img: img("diaphragm_photo.png"), txt: "Pièce de réglage interne / génération de pertes de charge." },
+      { title: "Caractérisation turbo", img: img("carac_turbo.png"), txt: "Points d’opération via pertes de charge contrôlées." }
+    ],
+
+    vide: [
+      {
+        title: "Boîte (étanchéité)",
+        img: img("boite.png"),
+        txt: "Boîte soudée sur mesure.",
+        desc: "Couvercle avec un joint d’étanchéité épais."
+      },
+      {
+        title: "Bouteille de pompage",
+        img: img("bouteille-pompage.png"),
+        txt: "Bouteille pour le vide (micropompe intégrée).",
+        desc: "Un côté soudé, l’autre côté avec deux brides Fullvac haute qualité, passages étanches et raccords pour connectiques micropompe."
+      },
+      {
+        title: "Micropompe",
+        img: img("micropompe.png"),
+        txt: "Micropompe pour le vide primaire.",
+        desc: "Débit jusqu’à 2800 mL/min • Pression max ~300 mbar • Puissance ~5 W."
+      }
+    ]
+  };
+
+  function renderHeader(){
+    return `
+      <div class="topbar">
+        <div class="logoWrap"><img src="${LOGO_SRC}" alt="logo"></div>
+        <div class="topTitles">
+          <div class="titleRow">
+            <h1>Pompe à Chaleur – R718</h1>
+            <span class="badge">Prototype expérimental</span>
           </div>
-        </div>
-        <div class="badge">Accès technique</div>
-        <input id="pw" type="password" placeholder="Mot de passe">
-        <button onclick="check()">Entrer</button>
-        <p id="err" style="display:none;color:#fb7185;text-align:center">Mot de passe incorrect</p>
-        <p class="hint">Astuce : mot de passe = 0</p>
-      </div>
-    `;
-    return;
-  }
-
-  if(state==="home"){
-    app.innerHTML = `
-      <div class="page">
-        <h1>Pompe à Chaleur – R718</h1>
-        <div class="hero">
-          <div class="heroTitle">Présentation technique</div>
-          <p class="heroTxt">
-            Interface de démonstration du banc expérimental R718 :
-            turbocompresseur refroidi, CFD et instrumentation ΔP.
-          </p>
-        </div>
-
-        <div class="homeGrid">
-          <div class="homeCard" onclick="state='turbo';render()">
-            <div class="homeCardTop"><div class="icon">🌀</div><h3>Turbo</h3></div>
-            <p>Vue 3D interactive du turbocompresseur.</p>
-          </div>
-
-          <div class="homeCard" onclick="state='boite';render()">
-            <div class="homeCardTop"><div class="icon">📦</div><h3>Boîte</h3></div>
-            <p>CFD, échangeur et écoulement.</p>
-          </div>
-
-
-          <div class="homeCard" onclick="state='capteur';render()">
-            <div class="homeCardTop"><div class="icon">📐</div><h3>Capteur ΔP</h3></div>
-            <p>Vue 3D CFD et justification.</p>
-          </div>
-
-          <div class="homeCard" onclick="state='diaphragm';render()">
-            <div class="homeCardTop"><div class="icon">⚙️</div><h3>Diaphragm</h3></div>
-            <p>Pièce de réglage interne.</p>
-          </div>
+          <div class="subtitle">Banc expérimental • Turbo • CFD • Instrumentation • Vide primaire</div>
         </div>
       </div>
     `;
-    return;
   }
 
-  if(state==="turbo"){
-    app.innerHTML = `
-      <div class="page">
-        <div class="back" onclick="state='home';render()">← Retour</div>
-        <h1>Turbo</h1>
-        <div class="pill">Modèle 3D interactif</div>
-
-        <model-viewer
-          src="turbo_web.glb"
-          camera-controls
-          auto-rotate
-          auto-rotate-delay="0"
-          rotation-per-second="20deg"
-          environment-image="neutral">
-        </model-viewer>
-
-        <div class="hint3d">🖐 Glisser pour tourner • Pincer pour zoomer</div>
-
-        <h1 style="font-size:16px;margin-top:18px">Slides</h1>
-        ${renderSlides("turbo")}
+  function renderSlides(key){
+    return `
+      <div class="grid">
+        ${slides[key].map(s => `
+          <div class="box">
+            <h3>${s.title}</h3>
+            <img class="media" src="${s.img}" alt="${s.title}">
+            <div class="txt">${s.txt || ""}</div>
+            ${s.desc ? `<div class="desc">${s.desc}</div>` : ""}
+          </div>
+        `).join("")}
       </div>
     `;
-    return;
   }
 
-  if(state==="capteur"){
-    app.innerHTML = `
-      <div class="page">
-        <div class="back" onclick="state='home';render()">← Retour</div>
-        <h1>Capteur ΔP</h1>
-        <div class="pill">Modèle 3D CFD interactif</div>
+  function render(){
+    const app = document.getElementById("app");
 
-        <model-viewer
-          src="cpd.glb"
-          camera-controls
-          auto-rotate
-          auto-rotate-delay="0"
-          rotation-per-second="20deg"
-          environment-image="neutral">
-        </model-viewer>
+    // HOME
+    if(state === "home"){
+      app.innerHTML = `
+        <div class="page">
+          ${renderHeader()}
 
-        <div class="hint3d">🖐 Glisser pour tourner • Pincer pour zoomer</div>
+          <div class="hero">
+            <div class="heroTitle">Présentation technique / contexte</div>
+            <p class="heroTxt">
+              Interface de démonstration du banc expérimental R718 : turbocompresseur, CFD,
+              instrumentation ΔP, et technologies pour le vide primaire.
+            </p>
+            <ul class="obj">
+              <li><b>Banc expérimental R718</b></li>
+              <li><b>Caractérisation d’un turbocompresseur</b></li>
+              <li><b>Débitmètre de vapeur d’eau à faible pression</b></li>
+              <li><b>Nouvelles technologies pour vide primaire</b></li>
+              <li><b>Nouveau modèle d’un échangeur à chaleur</b></li>
+            </ul>
+          </div>
 
-        <div class="txt">
-          Visualisation CFD utilisée pour le positionnement optimal
-          des prises de pression différentielle (ΔP).
+          <div class="homeGrid">
+            <div class="homeCard" onclick="state='visualisation';render()">
+              <div class="homeCardTop"><div class="icon">🗺️</div><h3>1) Visualisation 2D • 3D • Cycle</h3></div>
+              <p>Schémas 2D/3D + cycle thermodynamique.</p>
+            </div>
+
+            <div class="homeCard" onclick="state='turbo';render()">
+              <div class="homeCardTop"><div class="icon">🌀</div><h3>2) Turbo</h3></div>
+              <p>Modèle 3D + présentation (2 étages, 90 000 rpm, compatible R718).</p>
+            </div>
+
+            <div class="homeCard" onclick="state='echangeur';render()">
+              <div class="homeCardTop"><div class="icon">🔥</div><h3>3) Échangeur • Boîte • CFD</h3></div>
+              <p>Échangeur à ailettes, boîte/cuve, et résultats CFD.</p>
+            </div>
+
+            <div class="homeCard" onclick="state='debit';render()">
+              <div class="homeCardTop"><div class="icon">📏</div><h3>4) Mesure de débit</h3></div>
+              <p>Mesure via ΔP dans un tuyau + capteurs précis + modèle 3D CFD.</p>
+            </div>
+
+            <div class="homeCard" onclick="state='carac_turbo';render()">
+              <div class="homeCardTop"><div class="icon">⚙️</div><h3>5) Caractérisation turbo</h3></div>
+              <p>Génération de pertes de charge → points d’opération.</p>
+            </div>
+
+            <div class="homeCard" onclick="state='vide';render()">
+              <div class="homeCardTop"><div class="icon">🧪</div><h3>6) Vide Technos</h3></div>
+              <p>Soudure TIG, étanchéité, outils Fullvac, vide primaire.</p>
+            </div>
+          </div>
         </div>
+      `;
+      return;
+    }
 
-        <h1 style="font-size:16px;margin-top:18px">Justification CFD</h1>
-        ${renderSlides("capteur")}
-      </div>
-    `;
-    return;
+    // 1) Visualisation
+    if(state === "visualisation"){
+      app.innerHTML = `
+        <div class="page">
+          ${renderHeader()}
+          <div class="back" onclick="state='home';render()">← Retour</div>
+          <h1>1) Visualisation 2D • 3D • Cycle</h1>
+          <div class="pill">Schémas & cycle</div>
+          <div class="sectionIntro">
+            Vue d’ensemble du banc : représentation 2D/3D et cycle thermodynamique.
+          </div>
+          ${renderSlides("visualisation")}
+        </div>
+      `;
+      return;
+    }
+
+    // 2) Turbo
+    if(state === "turbo"){
+      app.innerHTML = `
+        <div class="page">
+          ${renderHeader()}
+          <div class="back" onclick="state='home';render()">← Retour</div>
+          <h1>2) Turbo</h1>
+          <div class="pill">Modèle 3D interactif</div>
+
+          <div class="sectionIntro">
+            <b>Présentation :</b> 2 étages • 90 000 rpm • Compatible avec le R718
+          </div>
+
+          <model-viewer
+            src="turbo_web.glb"
+            camera-controls
+            auto-rotate
+            auto-rotate-delay="0"
+            rotation-per-second="20deg"
+            environment-image="neutral">
+          </model-viewer>
+          <div class="hint3d">🖐 Glisser pour tourner • Pincer pour zoomer</div>
+
+          <h1 style="font-size:16px;margin-top:18px">Images</h1>
+          ${renderSlides("turbo")}
+        </div>
+      `;
+      return;
+    }
+
+    // 3) Échangeur / Boîte / CFD
+    if(state === "echangeur"){
+      app.innerHTML = `
+        <div class="page">
+          ${renderHeader()}
+          <div class="back" onclick="state='home';render()">← Retour</div>
+          <h1>3) Échangeur à chaleur • Boîte • CFD</h1>
+          <div class="pill">Échangeur + résultats CFD</div>
+
+          <div class="sectionIntro">
+            Nouveau modèle d’échangeur à chaleur, intégration dans la boîte, et visualisations CFD (pression, vitesse, température).
+          </div>
+
+          ${renderSlides("echangeur")}
+        </div>
+      `;
+      return;
+    }
+
+    // 4) Mesure de débit
+    if(state === "debit"){
+      app.innerHTML = `
+        <div class="page">
+          ${renderHeader()}
+          <div class="back" onclick="state='home';render()">← Retour</div>
+          <h1>4) Mesure de débit</h1>
+          <div class="pill">ΔP dans le tuyau + instrumentation</div>
+
+          <div class="sectionIntro">
+            Mesure du débit en mesurant <b>ΔP</b> dans le tuyau, avec <b>deux capteurs de pression précis</b>
+            et un <b>capteur de pression différentielle</b> (~<b>3%</b> d’incertitude).
+          </div>
+
+          <div class="pill">Modèle 3D CFD interactif</div>
+          <model-viewer
+            src="cpd.glb"
+            camera-controls
+            auto-rotate
+            auto-rotate-delay="0"
+            rotation-per-second="20deg"
+            environment-image="neutral">
+          </model-viewer>
+          <div class="hint3d">🖐 Glisser pour tourner • Pincer pour zoomer</div>
+
+          <h1 style="font-size:16px;margin-top:18px">Images</h1>
+          ${renderSlides("debit")}
+        </div>
+      `;
+      return;
+    }
+
+    // 5) Caractérisation turbo
+    if(state === "carac_turbo"){
+      app.innerHTML = `
+        <div class="page">
+          ${renderHeader()}
+          <div class="back" onclick="state='home';render()">← Retour</div>
+          <h1>5) Caractérisation de turbo</h1>
+          <div class="pill">Points d’opération</div>
+
+          <div class="sectionIntro">
+            Caractérisation en générant des <b>pertes de charge</b> afin d’obtenir différents <b>points d’opération</b>.
+          </div>
+
+          ${renderSlides("carac_turbo")}
+        </div>
+      `;
+      return;
+    }
+
+    // 6) Vide technos
+    if(state === "vide"){
+      app.innerHTML = `
+        <div class="page">
+          ${renderHeader()}
+          <div class="back" onclick="state='home';render()">← Retour</div>
+          <h1>6) Vide Technos</h1>
+          <div class="pill">Étanchéité & vide primaire</div>
+
+          <div class="sectionIntro">
+            Pour cette manip, nous avons utilisé des moyens plus rassurants pour l’étanchéité :
+            <b>soudure TIG</b> partout et des <b>outils pour le vide primaire</b>.
+          </div>
+
+          <h1 style="font-size:16px;margin-top:10px">Images & descriptions</h1>
+          ${renderSlides("vide")}
+
+          <h1 style="font-size:16px;margin-top:18px">Outils Fullvac (3D)</h1>
+          <div class="pill">Modèle 3D interactif</div>
+          <div class="sectionIntro">
+            Utilisant des outils <b>Fullvac</b>, soudé d’un côté et fermé de l’autre,
+            avec passages étanches soudés pour les connectiques (capteurs / ΔP).
+          </div>
+
+          <model-viewer
+            src="cpd.glb"
+            camera-controls
+            auto-rotate
+            auto-rotate-delay="0"
+            rotation-per-second="20deg"
+            environment-image="neutral">
+          </model-viewer>
+          <div class="hint3d">🖐 Glisser pour tourner • Pincer pour zoomer</div>
+        </div>
+      `;
+      return;
+    }
   }
 
-  app.innerHTML = `
-    <div class="page">
-      <div class="back" onclick="state='home';render()">← Retour</div>
-      <h1>${state.toUpperCase()}</h1>
-      ${renderSlides(state)}
-    </div>
-  `;
-}
-
-function check(){
-  if(document.getElementById("pw").value === PASSWORD){
-    state = "home";
-    render();
-  } else {
-    document.getElementById("err").style.display = "block";
-  }
-}
-
-render();
+  render();
 </script>
 </body>
 </html>
-
-
