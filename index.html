@@ -258,40 +258,40 @@
   const slides = {
     visualisation: [
       { title: "Visualisation 2D", img: img("2D.png"), txt: "Schéma 2D du banc et des sous-ensembles." },
-      { title: "Visualisation 3D", img: img("3D.png"), txt: "Vue 3D pour l’implantation et l’intégration." },
+      { title: "Visualisation 3D", img: img("3D.png"), txt: "Vue 3D de l’implantation et l’intégration." },
       { title: "Cycle thermodynamique", img: img("cycle-thermodynamique.png"), txt: "Cycle et points de fonctionnement." }
     ],
     turbo: [
       { title: "Architecture", img: img("turbo_exploded.png"), txt: "Vue éclatée / architecture du turbo." },
-      { title: "Turbo – intérieur", img: img("turbo-int.png"), txt: "Vue interne / éléments principaux." }
+      { title: "Cycles de Refroidissement", img: img("turbo-int.png"), txt: "Vue interne / éléments principaux." }
     ],
     echangeur: [
-      { title: "Échangeur – ailettes (fins)", img: img("echangeur-fins.png"), txt: "Nouveau modèle d’échangeur à chaleur." },
-      { title: "Boîte – cuve", img: img("boite-cuve.png"), txt: "Boîte/volume principal et intégration." },
+      { title: "Échangeur à ailettes", img: img("echangeur-fins.png"), txt: "PdC 0.2 mbar - écoulement vapeur d'eau." },
+      { title: "Boîte – cuve", img: img("boite_cuve.png"), txt: "Intégration de l'échangeur dans la boîte." },
       { title: "CFD – pression & lignes de courant", img: img("cfd_pressure_streamlines.png"), txt: "Répartition pression et écoulement." },
-      { title: "CFD – température", img: img("cfd_temperature.png"), txt: "Champs de température et zones critiques." },
-      { title: "CFD – vitesse", img: img("cfd_velocity.png"), txt: "Jets, recirculations et gradients de vitesse." }
+      { title: "CFD – température", img: img("cfd_temperature.png"), txt: "Champs de température (vu de dessus)." },
+      { title: "CFD – vitesse", img: img("cfd_velocity.png"), txt: "Gradients de vitesse." }
     ],
     debit: [
-      { title: "Capteur ΔP", img: img("capteur-p-diff.png"), txt: "Mesure ΔP : capteurs précis + capteur différentiel (≈3% d’incertitude)." },
-      { title: "CFD – tuyau", img: img("cfd-tuyau.png"), txt: "CFD support pour le positionnement/lecture ΔP." }
+      { title: "Capteur ΔP", img: img("capteur-p-diff.png"), txt: "Mesure ΔP : ≈3% d’incertitude." },
+      { title: "CFD – tuyau", img: img("cfd-tuyau.png"), txt: "CFD - validation de mesure ΔP-débit." }
     ],
     carac_turbo: [
-      { title: "Diaphragm (photo)", img: img("diaphragm_photo.png"), txt: "Pièce de réglage interne / génération de pertes de charge." },
+      { title: "Diaphragm Circulaire", img: img("diaphragm_photo.png"), txt: "Pièce de réglage interne / génération de pertes de charge." },
       { title: "Caractérisation turbo", img: img("carac_turbo.png"), txt: "Points d’opération via pertes de charge contrôlées." }
     ],
     vide: [
       {
         title: "Boîte (étanchéité)",
-        img: img("boite.png"),
+        img: img("boite .png"),
         txt: "Boîte soudée sur mesure.",
-        desc: "Couvercle avec un joint d’étanchéité épais."
+        desc: "Soudure Tig AC des plaques + Couvercle à visser avec un joint d’étanchéité épais spécifique."
       },
       {
         title: "Bouteille de pompage",
         img: img("bouteille-pompage.png"),
         txt: "Bouteille pour le vide (micropompe intégrée).",
-        desc: "Un côté soudé, l’autre côté avec deux brides Fullvac haute qualité, passages étanches et raccords pour connectiques micropompe."
+        desc: "Un côté soudé, l’autre côté avec deux brides 'Fullvac' haute qualité, passages étanches et raccords pour connectiques micropompe."
       },
       {
         title: "Micropompe",
@@ -361,8 +361,6 @@
           <div class="hero">
             <div class="heroTitle">Présentation technique / contexte</div>
             <p class="heroTxt">
-              Interface de démonstration du banc expérimental R718 : turbocompresseur, CFD,
-              instrumentation ΔP, et technologies pour le vide primaire.
             </p>
             <ul class="obj">
               <li><b>Banc expérimental R718</b></li>
@@ -375,28 +373,28 @@
 
           <div class="homeGrid">
             <div class="homeCard" onclick="state='visualisation';render()">
-              <div class="homeCardTop"><div class="icon">🗺️</div><h3>1) Visualisation 2D • 3D • Cycle</h3></div>
+              <div class="homeCardTop"><div class="icon">🗺️</div><h3>1) Visualisation </h3></div>
               <p>Schémas 2D/3D + cycle thermodynamique.</p>
             </div>
 
             <div class="homeCard" onclick="state='turbo';render()">
               <div class="homeCardTop"><div class="icon">🌀</div><h3>2) Turbo</h3></div>
-              <p>Modèle 3D + présentation (2 étages, 90 000 rpm, compatible R718).</p>
+              <p>Modèle 3D - Cycle Interne - Refroidissement).</p>
             </div>
 
             <div class="homeCard" onclick="state='echangeur';render()">
-              <div class="homeCardTop"><div class="icon">🔥</div><h3>3) Échangeur • Boîte • CFD</h3></div>
+              <div class="homeCardTop"><div class="icon">🔥</div><h3>3) Échangeur de Chaleur</h3></div>
               <p>Échangeur à ailettes, boîte/cuve, et résultats CFD.</p>
             </div>
 
             <div class="homeCard" onclick="state='debit';render()">
               <div class="homeCardTop"><div class="icon">📏</div><h3>4) Mesure de débit</h3></div>
-              <p>Mesure via ΔP dans un tuyau + capteurs précis + modèle 3D CFD.</p>
+              <p>Mesure ΔP - C PD - CFD - modèle 3D CFD.</p>
             </div>
 
             <div class="homeCard" onclick="state='carac_turbo';render()">
               <div class="homeCardTop"><div class="icon">⚙️</div><h3>5) Caractérisation turbo</h3></div>
-              <p>Génération de pertes de charge → points d’opération.</p>
+              <p>Génération de pertes de charge - Vanne.</p>
             </div>
 
             <div class="homeCard" onclick="state='vide';render()">
@@ -432,7 +430,7 @@
           <div class="back" onclick="state='home';render()">← Retour</div>
           <h1>2) Turbo</h1>
           <div class="pill">Modèle 3D interactif</div>
-          <div class="sectionIntro"><b>Présentation :</b> 2 étages • 90 000 rpm • Compatible avec le R718</div>
+          <div class="sectionIntro">2 étages • 90 000 rpm • Compatible avec le R718</div>
 
           <model-viewer
             src="turbo_web.glb"
@@ -460,7 +458,7 @@
           <h1>3) Échangeur à chaleur • Boîte • CFD</h1>
           <div class="pill">Échangeur + résultats CFD</div>
           <div class="sectionIntro">
-            Nouveau modèle d’échangeur à chaleur, intégration dans la boîte, et visualisations CFD (pression, vitesse, température).
+            Nouveau modèle d’échangeur à chaleur, intégration dans une boîte pour le vide, et visualisations CFD d'écoulement interne (pression, vitesse, température).
           </div>
           ${renderSlides("echangeur")}
         </div>
@@ -535,8 +533,8 @@
           <h1 style="font-size:16px;margin-top:18px">Outils Fullvac (3D)</h1>
           <div class="pill">Modèle 3D interactif</div>
           <div class="sectionIntro">
-            Utilisant des outils <b>Fullvac</b>, soudé d’un côté et fermé de l’autre,
-            avec passages étanches soudés pour les connectiques (capteurs / ΔP).
+            Intégration de Capteur de pression différentielle, en utilisant des outils <b>Fullvac</b>, soudé d’un côté et fermé de l’autre (collier d'étanchéité),
+            avec des passages étanches soudés pour les connectiques (Hydraulique - Electrique) de ca capteur ΔP.
           </div>
 
           <model-viewer
@@ -559,4 +557,5 @@
 </script>
 </body>
 </html>
+
 
