@@ -10,7 +10,6 @@
     :root{
       --bgOverlay: rgba(2,6,23,.78);
       --card: rgba(255,255,255,.10);
-      --card2: rgba(255,255,255,.14);
       --line: rgba(255,255,255,.12);
       --text: #f8fafc;
       --muted:#cbd5e1;
@@ -21,31 +20,22 @@
     }
 
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
       font-family: Arial, sans-serif;
       color:var(--text);
       min-height:100vh;
-      background:#020617;
-      position:relative;
       overflow-x:hidden;
-    }
 
-    /* Background image + dark overlay */
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      background:url("background.png") center/cover no-repeat;
-      z-index:-2;
-      transform:scale(1.02);
-    }
-    body::after{
-      content:"";
-      position:fixed;
-      inset:0;
-      background:linear-gradient(135deg, rgba(2,6,23,.82), rgba(2,6,23,.62));
-      z-index:-1;
+      /* ✅ Background (mets background.png dans ASSETS/) */
+      background:
+        linear-gradient(135deg, rgba(2,6,23,.82), rgba(2,6,23,.62)),
+        url("ASSETS/background.png");
+      background-position: center, center;
+      background-size: cover, cover;
+      background-repeat: no-repeat, no-repeat;
+      background-attachment: fixed, fixed;
     }
 
     .page{
@@ -197,6 +187,8 @@
       backdrop-filter: blur(10px);
     }
     .box h3{margin:0 0 8px;font-size:14px;color:#e2e8f0}
+
+    /* ✅ Clickable images */
     .media{
       width:100%;
       height:230px;
@@ -204,7 +196,9 @@
       background:rgba(0,0,0,.55);
       border-radius:10px;
       border:1px solid rgba(255,255,255,.10);
+      cursor: zoom-in;
     }
+
     .txt{
       color:var(--muted);
       font-size:13px;
@@ -234,17 +228,125 @@
       text-align:center;
     }
 
+    /* ===========================
+       ✅ Lightbox (zoom viewer)
+       =========================== */
+    .lightbox{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.82);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+      padding:18px;
+    }
+    .lightbox.open{display:flex}
+
+    .lightboxPanel{
+      width:min(1100px, 96vw);
+      height:min(760px, 88vh);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      box-shadow: 0 20px 70px rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+    .lightboxTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .lbTitle{
+      font-size:12px;
+      color: var(--muted);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width:60%;
+    }
+    .lbBtns{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .lbBtn{
+      border:none;
+      border-radius:10px;
+      padding:8px 10px;
+      cursor:pointer;
+      background: rgba(56,189,248,.18);
+      border:1px solid rgba(56,189,248,.22);
+      color: var(--text);
+      font-weight:700;
+      font-size:12px;
+    }
+    .lbBtn.secondary{
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      font-weight:600;
+    }
+
+    .lightboxBody{
+      position:relative;
+      flex:1;
+      overflow:auto; /* ✅ important for zoom */
+      background: rgba(0,0,0,.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .lbImg{
+      max-width:none; /* allow scaling beyond container */
+      max-height:none;
+      width:auto;
+      height:auto;
+      transform-origin: center center;
+      will-change: transform;
+      user-select:none;
+      -webkit-user-drag:none;
+      cursor: grab;
+    }
+    .lbImg:active{cursor: grabbing}
+
     @media (max-width:520px){
       .page{padding:14px}
       model-viewer{height:340px}
       .media{height:210px}
       h1{font-size:16px}
+      .lbTitle{max-width:45%}
     }
   </style>
 </head>
 
 <body>
 <div id="app"></div>
+
+<!-- ✅ Lightbox DOM -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+  <div class="lightboxPanel" onclick="event.stopPropagation()">
+    <div class="lightboxTop">
+      <div id="lbTitle" class="lbTitle">Image</div>
+      <div class="lbBtns">
+        <button class="lbBtn secondary" onclick="resetZoom()">Reset</button>
+        <button class="lbBtn" onclick="zoomBy(1.2)">+</button>
+        <button class="lbBtn" onclick="zoomBy(1/1.2)">−</button>
+        <button class="lbBtn secondary" onclick="downloadCurrent()">Télécharger</button>
+        <button class="lbBtn secondary" onclick="closeLightbox()">Fermer ✕</button>
+      </div>
+    </div>
+    <div id="lbBody" class="lightboxBody">
+      <img id="lbImg" class="lbImg" alt="zoom">
+    </div>
+  </div>
+</div>
 
 <script>
   // Accès direct : pas de login
@@ -260,34 +362,29 @@
       { title: "Visualisation 3D", img: img("3D.png"), txt: "Vue 3D pour l’implantation et l’intégration." },
       { title: "Cycle thermodynamique", img: img("cycle-thermodynamique.png"), txt: "Cycle et points de fonctionnement." }
     ],
-
     turbo: [
       { title: "Architecture", img: img("turbo_exploded.png"), txt: "Vue éclatée / architecture du turbo." },
       { title: "Turbo – intérieur", img: img("turbo-int.png"), txt: "Vue interne / éléments principaux." }
     ],
-
     echangeur: [
       { title: "Échangeur – ailettes (fins)", img: img("echangeur-fins.png"), txt: "Nouveau modèle d’échangeur à chaleur." },
-      { title: "Boîte – cuve", img: img("boite_cuve.png"), txt: "Boîte/volume principal et intégration." },
+      { title: "Boîte – cuve", img: img("boite-cuve.png"), txt: "Boîte/volume principal et intégration." },
       { title: "CFD – pression & lignes de courant", img: img("cfd_pressure_streamlines.png"), txt: "Répartition pression et écoulement." },
       { title: "CFD – température", img: img("cfd_temperature.png"), txt: "Champs de température et zones critiques." },
       { title: "CFD – vitesse", img: img("cfd_velocity.png"), txt: "Jets, recirculations et gradients de vitesse." }
     ],
-
     debit: [
       { title: "Capteur ΔP", img: img("capteur-p-diff.png"), txt: "Mesure ΔP : capteurs précis + capteur différentiel (≈3% d’incertitude)." },
       { title: "CFD – tuyau", img: img("cfd-tuyau.png"), txt: "CFD support pour le positionnement/lecture ΔP." }
     ],
-
     carac_turbo: [
       { title: "Diaphragm (photo)", img: img("diaphragm_photo.png"), txt: "Pièce de réglage interne / génération de pertes de charge." },
       { title: "Caractérisation turbo", img: img("carac_turbo.png"), txt: "Points d’opération via pertes de charge contrôlées." }
     ],
-
     vide: [
       {
         title: "Boîte (étanchéité)",
-        img: img("boite .png"),
+        img: img("boite.png"),
         txt: "Boîte soudée sur mesure.",
         desc: "Couvercle avec un joint d’étanchéité épais."
       },
@@ -327,7 +424,7 @@
         ${slides[key].map(s => `
           <div class="box">
             <h3>${s.title}</h3>
-            <img class="media" src="${s.img}" alt="${s.title}">
+            <img class="media" src="${s.img}" alt="${s.title}" data-full="${s.img}">
             <div class="txt">${s.txt || ""}</div>
             ${s.desc ? `<div class="desc">${s.desc}</div>` : ""}
           </div>
@@ -336,10 +433,18 @@
     `;
   }
 
+  function attachImageLightbox(){
+    // bind click on any .media image (after each render)
+    document.querySelectorAll("img.media").forEach(el=>{
+      el.addEventListener("click", () => {
+        openLightbox(el.getAttribute("data-full") || el.src, el.alt || "Image");
+      });
+    });
+  }
+
   function render(){
     const app = document.getElementById("app");
 
-    // HOME
     if(state === "home"){
       app.innerHTML = `
         <div class="page">
@@ -393,10 +498,10 @@
           </div>
         </div>
       `;
+      attachImageLightbox();
       return;
     }
 
-    // 1) Visualisation
     if(state === "visualisation"){
       app.innerHTML = `
         <div class="page">
@@ -410,10 +515,10 @@
           ${renderSlides("visualisation")}
         </div>
       `;
+      attachImageLightbox();
       return;
     }
 
-    // 2) Turbo
     if(state === "turbo"){
       app.innerHTML = `
         <div class="page">
@@ -440,10 +545,10 @@
           ${renderSlides("turbo")}
         </div>
       `;
+      attachImageLightbox();
       return;
     }
 
-    // 3) Échangeur / Boîte / CFD
     if(state === "echangeur"){
       app.innerHTML = `
         <div class="page">
@@ -459,10 +564,10 @@
           ${renderSlides("echangeur")}
         </div>
       `;
+      attachImageLightbox();
       return;
     }
 
-    // 4) Mesure de débit
     if(state === "debit"){
       app.innerHTML = `
         <div class="page">
@@ -491,10 +596,10 @@
           ${renderSlides("debit")}
         </div>
       `;
+      attachImageLightbox();
       return;
     }
 
-    // 5) Caractérisation turbo
     if(state === "carac_turbo"){
       app.innerHTML = `
         <div class="page">
@@ -510,10 +615,10 @@
           ${renderSlides("carac_turbo")}
         </div>
       `;
+      attachImageLightbox();
       return;
     }
 
-    // 6) Vide technos
     if(state === "vide"){
       app.innerHTML = `
         <div class="page">
@@ -548,12 +653,105 @@
           <div class="hint3d">🖐 Glisser pour tourner • Pincer pour zoomer</div>
         </div>
       `;
+      attachImageLightbox();
       return;
     }
   }
+
+  // ===========================
+  // ✅ Lightbox + Zoom logic
+  // ===========================
+  const lightbox = document.getElementById("lightbox");
+  const lbImg = document.getElementById("lbImg");
+  const lbTitle = document.getElementById("lbTitle");
+  const lbBody = document.getElementById("lbBody");
+
+  let currentSrc = "";
+  let scale = 1;
+
+  // drag to pan
+  let isDragging = false;
+  let startX = 0, startY = 0;
+  let scrollLeft = 0, scrollTop = 0;
+
+  function openLightbox(src, title){
+    currentSrc = src;
+    scale = 1;
+    lbImg.style.transform = `scale(${scale})`;
+    lbImg.src = src;
+    lbTitle.textContent = title || "Image";
+    lightbox.classList.add("open");
+
+    // reset scroll to center-ish
+    requestAnimationFrame(() => {
+      lbBody.scrollTop = (lbBody.scrollHeight - lbBody.clientHeight)/2;
+      lbBody.scrollLeft = (lbBody.scrollWidth - lbBody.clientWidth)/2;
+    });
+  }
+
+  function closeLightbox(e){
+    // if called from backdrop click
+    lightbox.classList.remove("open");
+  }
+
+  function zoomBy(factor){
+    scale *= factor;
+    scale = Math.max(0.4, Math.min(scale, 6));
+    lbImg.style.transform = `scale(${scale})`;
+  }
+
+  function resetZoom(){
+    scale = 1;
+    lbImg.style.transform = `scale(${scale})`;
+    lbBody.scrollTop = 0;
+    lbBody.scrollLeft = 0;
+  }
+
+  function downloadCurrent(){
+    if(!currentSrc) return;
+    const a = document.createElement("a");
+    a.href = currentSrc;
+    a.download = (lbTitle.textContent || "image") + ".png";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  // Mouse wheel zoom
+  lbBody.addEventListener("wheel", (e)=>{
+    if(!lightbox.classList.contains("open")) return;
+    e.preventDefault();
+    const factor = (e.deltaY < 0) ? 1.12 : (1/1.12);
+    zoomBy(factor);
+  }, { passive:false });
+
+  // Drag to pan (desktop)
+  lbBody.addEventListener("mousedown", (e)=>{
+    if(!lightbox.classList.contains("open")) return;
+    isDragging = true;
+    startX = e.pageX;
+    startY = e.pageY;
+    scrollLeft = lbBody.scrollLeft;
+    scrollTop = lbBody.scrollTop;
+  });
+  window.addEventListener("mouseup", ()=>{ isDragging = false; });
+  lbBody.addEventListener("mousemove", (e)=>{
+    if(!isDragging) return;
+    e.preventDefault();
+    const dx = e.pageX - startX;
+    const dy = e.pageY - startY;
+    lbBody.scrollLeft = scrollLeft - dx;
+    lbBody.scrollTop = scrollTop - dy;
+  });
+
+  // ESC to close
+  window.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape" && lightbox.classList.contains("open")){
+      closeLightbox();
+    }
+  });
 
   render();
 </script>
 </body>
 </html>
-
